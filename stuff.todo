@@ -1,0 +1,4 @@
+- separate the window from the level
+- create camera
+- make an enemy with basic tracking (move toward player)
+	- should only start if within a certain range
