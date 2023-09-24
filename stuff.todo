@@ -1,4 +1,5 @@
-- separate the window from the level
-- create camera
+- set up textures for the level (tiles)
+- set up a game object to handle updates and rendering
+- fix camera offset applying to the destination render
 - make an enemy with basic tracking (move toward player)
 	- should only start if within a certain range
