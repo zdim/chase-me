@@ -70,12 +70,16 @@ impl Player {
         self.destination = Some(destination);
     }
 
-    pub fn render(&self, canvas: &mut Canvas<Window>) {
+    pub fn render(&self, canvas: &mut Canvas<Window>, offset: Position) {
+        let render_position = Position {
+            x: self.location.x - offset.x,
+            y: self.location.y - offset.y,
+        };
         canvas.set_draw_color(Color::RGBA(255, 255, 255, 1));
         canvas
             .fill_rect(Rect::new(
-                (self.location.x as i32) - (WIDTH as i32 / 2),
-                self.location.y as i32 - (HEIGHT as i32 / 2),
+                (render_position.x as i32) - (WIDTH as i32 / 2),
+                render_position.y as i32 - (HEIGHT as i32 / 2),
                 WIDTH,
                 HEIGHT,
             ))
@@ -84,32 +88,39 @@ impl Player {
 
         // render the destination. should this be in a different file?
         // this will probably be a texture at some point
-        canvas.set_draw_color(Color::RGBA(255, 50, 50, 1));
         if self.destination.is_some() {
+            let dest_render_position = Position {
+                x: self.destination.unwrap().x - offset.x,
+                y: self.destination.unwrap().y - offset.y,
+            };
+            canvas.set_draw_color(Color::RGBA(255, 50, 50, 1));
             canvas
                 .draw_line(
                     Point::new(
-                        self.destination.unwrap().x as i32 - 5,
-                        self.destination.unwrap().y as i32 - 5,
+                        dest_render_position.x as i32 - 5,
+                        dest_render_position.y as i32 - 5,
                     ),
                     Point::new(
-                        self.destination.unwrap().x as i32 + 5,
-                        self.destination.unwrap().y as i32 + 5,
+                        dest_render_position.x as i32 + 5,
+                        dest_render_position.y as i32 + 5,
                     ),
                 )
                 .ok()
                 .unwrap_or_default();
-        
-            canvas.draw_line(
-                Point::new(
-                    self.destination.unwrap().x as i32 + 5,
-                    self.destination.unwrap().y as i32 - 5, 
-                ),
-                Point::new( 
-                    self.destination.unwrap().x as i32 - 5,
-                    self.destination.unwrap().y as i32 + 5,
-                ),
-            ).ok().unwrap_or_default();
+
+            canvas
+                .draw_line(
+                    Point::new(
+                        dest_render_position.x as i32 + 5,
+                        dest_render_position.y as i32 - 5,
+                    ),
+                    Point::new(
+                        dest_render_position.x as i32 - 5,
+                        dest_render_position.y as i32 + 5,
+                    ),
+                )
+                .ok()
+                .unwrap_or_default();
         }
     }
 }

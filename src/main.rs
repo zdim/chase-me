@@ -21,6 +21,7 @@ const WINDOW_HEIGHT: u32 = 600;
 fn main() -> Result<(), String> {
     const FRAME_CAP: i8 = 60;
     const TARGET_TICKS: f32 = (1.0 / (FRAME_CAP as f32)) * 1000.0;
+
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
     let window = video_subsystem.window("Game", WINDOW_WIDTH, WINDOW_HEIGHT).build().unwrap();
@@ -48,7 +49,7 @@ fn main() -> Result<(), String> {
         area: Rect::new(-100, -100, 400, 400)
     };
 
-    let camera = camera::Camera {
+    let mut camera = camera::Camera {
         size: Rect::new(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT),
         location: Position { x: 0.0, y: 0.0 }
     };
@@ -92,6 +93,12 @@ fn main() -> Result<(), String> {
 
         player.update(delta);
 
+        // the camera's location should be offset by half the width & height
+        camera.location = Position {
+            x: player.location.x - ((WINDOW_WIDTH / 2) as f32),
+            y: player.location.y - ((WINDOW_HEIGHT / 2) as f32),
+        };
+
         // clear
         world.clear(&mut canvas);
 
@@ -99,7 +106,7 @@ fn main() -> Result<(), String> {
         level.render(&mut canvas);
 
         // render the player
-        player.render(&mut canvas);
+        player.render(&mut canvas, camera.location);
 
         canvas.present();
 
